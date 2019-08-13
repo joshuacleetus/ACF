@@ -1,0 +1,6 @@
+framework module Pods_ACFTests {
+  umbrella header "Pods-ACFTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
