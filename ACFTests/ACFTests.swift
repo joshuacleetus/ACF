@@ -8,15 +8,64 @@
 
 import XCTest
 @testable import ACF
+@testable import Alamofire
 
 class ACFTests: XCTestCase {
-
+    
+    var apiService:ProductAPIService!
+    
     override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        super.setUp()
+        apiService = ProductAPIService()
     }
 
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        apiService = nil
+        super.tearDown()
+    }
+    
+    // Asynchronous test: success fast, failure slow
+    func testValidCallToiTunesGetsHTTPStatusCode200() {
+        // given
+        let route = ProductAPIRouter.product
+        // 1
+        let promise = expectation(description: "Status code: 200")
+        
+        // when
+        Alamofire.request(route).responseJSON { (response) in
+            // then
+            if let statusCode = response.response?.statusCode, statusCode == 200 {
+                promise.fulfill()
+            } else {
+                XCTFail("Status code not 200")
+            }
+        }
+        // 3
+        wait(for: [promise], timeout: 10)
+    }
+    
+    func testValidCallToServerGetsProducts() {
+        // given
+        let route = ProductAPIRouter.product
+        // 1
+        let promise = expectation(description: "Products fetched successfully from the server!")
+        
+        // when
+        apiService.getData(route: route) { (data) in
+            let decoder = JSONDecoder()
+            // then
+            if let data = data, let results = try? decoder.decode([Product].self, from: data) {
+                if !results.isEmpty {
+                    promise.fulfill()
+                } else {
+                    XCTFail("No data found!")
+                }
+            } else {
+                XCTFail("No data found!")
+            }
+        }
+        // 3
+        wait(for: [promise], timeout: 10)
     }
 
     func testExample() {

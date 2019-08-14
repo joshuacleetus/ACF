@@ -24,8 +24,6 @@ class DetailViewController: UIViewController, WKUIDelegate {
         guard let urlString = targetURLString else { return }
         guard let targetURL = URL(string: urlString) else { return }
         let request = URLRequest(url: targetURL)
-        print(targetURL as Any)
-        print(request as Any)
         webView.load(request)
     }
     

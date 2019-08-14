@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 
-struct ProductAPIService {
+struct ProductAPIService: ProductAPIProtocol {
     func getData(route: URLRequestConvertible, completion: @escaping ((Data?) -> Void)) {
         let urlCache = URLCache.shared
         if let route = route as? ProductAPIRouter, let request = try? route.asURLRequest(), let data = urlCache.cachedResponse(for: request )?.data {
